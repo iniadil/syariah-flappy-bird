@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import Phaser from "phaser";
 
 // Portrait mobile dimensions
 const GAME_W = 400;
@@ -6,53 +6,65 @@ const GAME_H = 720;
 
 class LoadingScene extends Phaser.Scene {
   constructor() {
-    super('LoadingScene');
+    super("LoadingScene");
   }
 
   preload() {
     const cx = GAME_W / 2;
     const cy = GAME_H / 2;
 
-    this.cameras.main.setBackgroundColor('#5ba3c9');
+    this.cameras.main.setBackgroundColor("#5ba3c9");
 
-    this.add.text(cx, cy - 100, 'Flappy Bird', {
-      fontSize: '44px',
-      fontFamily: 'Arial',
-      color: '#ffffff',
-      stroke: '#000000',
-      strokeThickness: 6,
-    }).setOrigin(0.5);
+    this.add
+      .text(cx, cy - 100, "Flappy Bird", {
+        fontSize: "44px",
+        fontFamily: "Arial",
+        color: "#ffffff",
+        stroke: "#000000",
+        strokeThickness: 6,
+      })
+      .setOrigin(0.5);
 
     // Progress bar
     this.add.rectangle(cx, cy, 260, 28, 0x000000, 0.4).setOrigin(0.5);
-    const bar = this.add.rectangle(cx - 128, cy, 4, 20, 0xffffff).setOrigin(0, 0.5);
+    const bar = this.add
+      .rectangle(cx - 128, cy, 4, 20, 0xffffff)
+      .setOrigin(0, 0.5);
 
-    this.add.text(cx, cy + 30, 'Loading...', {
-      fontSize: '18px',
-      fontFamily: 'Arial',
-      color: '#ffffff',
-      stroke: '#000000',
-      strokeThickness: 3,
-    }).setOrigin(0.5);
+    this.add
+      .text(cx, cy + 30, "Loading...", {
+        fontSize: "18px",
+        fontFamily: "Arial",
+        color: "#ffffff",
+        stroke: "#000000",
+        strokeThickness: 3,
+      })
+      .setOrigin(0.5);
 
-    this.load.on('progress', (v) => bar.setSize(4 + 252 * v, 20));
+    this.load.on("progress", (v) => bar.setSize(4 + 252 * v, 20));
 
-    this.load.image('bg', 'assets/bg_dessert_1024x640.png');
-    this.load.image('ground', 'assets/rumput_30x30.png');
-    this.load.spritesheet('bird', 'assets/main_character_4frame_200x50.png', {
+    this.load.image("bg", "assets/bg_dessert_1024x640.png");
+    this.load.image("ground", "assets/rumput_30x30.png");
+    this.load.spritesheet("bird", "assets/main_character_4frame_200x50.png", {
       frameWidth: 50,
       frameHeight: 50,
     });
-    this.load.image('pilar_sheet', 'assets/pilar_2frame_100x300.png');
-    this.load.audio('bgm', 'assets/sound/bgm_music.mp3');
-    this.load.audio('jumpSound', 'assets/sound/flappy_bird_jump_sound.wav');
-    this.load.audio('scoreSound', 'assets/sound/checkpoint_sound.wav');
-    this.load.audio('crashSound', 'assets/sound/funny_flappy_bird_crash_sound.wav');
-    this.load.audio('fallSound', 'assets/sound/funny_flappy_bird_fall_down_sound.wav');
+    this.load.image("pilar_sheet", "assets/pilar_2frame_100x300.png");
+    this.load.audio("bgm", "assets/sound/bgm_music.mp3");
+    this.load.audio("jumpSound", "assets/sound/flappy_bird_jump_sound.wav");
+    this.load.audio("scoreSound", "assets/sound/checkpoint_sound.wav");
+    this.load.audio(
+      "crashSound",
+      "assets/sound/funny_flappy_bird_crash_sound.wav",
+    );
+    this.load.audio(
+      "fallSound",
+      "assets/sound/funny_flappy_bird_fall_down_sound.wav",
+    );
   }
 
   create() {
-    this.scene.start('GameScene');
+    this.scene.start("GameScene");
   }
 }
 
@@ -73,7 +85,7 @@ const STATE = { READY: 0, PLAYING: 1, GAME_OVER: 2 };
 
 class GameScene extends Phaser.Scene {
   constructor() {
-    super({ key: 'GameScene' });
+    super({ key: "GameScene" });
     this.state = STATE.READY;
     this.score = 0;
     this.level = 0;
@@ -90,11 +102,17 @@ class GameScene extends Phaser.Scene {
     const cx = GAME_W / 2;
 
     // Background
-    this.bg = this.add.tileSprite(cx, GAME_H / 2, GAME_W, GAME_H, 'bg');
+    this.bg = this.add.tileSprite(cx, GAME_H / 2, GAME_W, GAME_H, "bg");
 
     // Ground
     const groundY = GAME_H - GROUND_HEIGHT / 2;
-    this.ground = this.add.tileSprite(cx, groundY, GAME_W, GROUND_HEIGHT, 'ground');
+    this.ground = this.add.tileSprite(
+      cx,
+      groundY,
+      GAME_W,
+      GROUND_HEIGHT,
+      "ground",
+    );
     this.ground.setDepth(5);
     this.groundBody = this.physics.add.staticImage(cx, groundY);
     this.groundBody.setDisplaySize(GAME_W, GROUND_HEIGHT);
@@ -109,7 +127,7 @@ class GameScene extends Phaser.Scene {
 
     // Bird
     const birdStartY = GAME_H / 2 - 50;
-    this.bird = this.physics.add.sprite(BIRD_X, birdStartY, 'bird');
+    this.bird = this.physics.add.sprite(BIRD_X, birdStartY, "bird");
     this.bird.setScale(BIRD_SCALE);
     this.bird.setCollideWorldBounds(false);
     this.bird.body.setAllowGravity(false);
@@ -118,12 +136,12 @@ class GameScene extends Phaser.Scene {
     this.bird.body.setOffset(6, 6);
 
     this.anims.create({
-      key: 'flap',
-      frames: this.anims.generateFrameNumbers('bird', { start: 0, end: 3 }),
+      key: "flap",
+      frames: this.anims.generateFrameNumbers("bird", { start: 0, end: 3 }),
       frameRate: 10,
       repeat: -1,
     });
-    this.bird.play('flap');
+    this.bird.play("flap");
     this.birdStartY = birdStartY;
 
     // Pillar groups — use plain groups, we manage physics manually
@@ -131,79 +149,107 @@ class GameScene extends Phaser.Scene {
     this.scoreZones = this.add.group();
 
     // Score text
-    this.scoreText = this.add.text(cx, 60, '0', {
-      fontSize: '52px',
-      fontFamily: 'Arial',
-      color: '#ffffff',
-      stroke: '#000000',
-      strokeThickness: 5,
-    }).setOrigin(0.5).setDepth(20);
+    this.scoreText = this.add
+      .text(cx, 60, "0", {
+        fontSize: "52px",
+        fontFamily: "Arial",
+        color: "#ffffff",
+        stroke: "#000000",
+        strokeThickness: 5,
+      })
+      .setOrigin(0.5)
+      .setDepth(20);
     this.scoreText.setVisible(false);
 
     // Message text
-    this.messageText = this.add.text(cx, GAME_H / 2 - 80, 'Tap or Press Space\nto Start', {
-      fontSize: '26px',
-      fontFamily: 'Arial',
-      color: '#ffffff',
-      stroke: '#000000',
-      strokeThickness: 3,
-      align: 'center',
-    }).setOrigin(0.5).setDepth(20);
+    this.messageText = this.add
+      .text(cx, GAME_H / 2 - 80, "Tap or Press Space\nto Start", {
+        fontSize: "26px",
+        fontFamily: "Arial",
+        color: "#ffffff",
+        stroke: "#000000",
+        strokeThickness: 3,
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setDepth(20);
 
     // Watermark
-    this.add.text(cx, GAME_H - 50, 'Made by Muhammad Adil', {
-      fontSize: '13px',
-      fontFamily: 'Arial',
-      color: '#ffffff',
-      stroke: '#000000',
-      strokeThickness: 2,
-      alpha: 0.7,
-    }).setOrigin(0.5).setDepth(20);
+    this.add
+      .text(cx, GAME_H - 50, "Made by Muhammad Adil", {
+        fontSize: "13px",
+        fontFamily: "Arial",
+        color: "#ffffff",
+        stroke: "#000000",
+        strokeThickness: 2,
+        alpha: 0.7,
+      })
+      .setOrigin(0.5)
+      .setDepth(20);
 
-    this.add.text(cx, GAME_H - 32, 'github.com/iniadi', {
-      fontSize: '12px',
-      fontFamily: 'Arial',
-      color: '#aaddff',
-      stroke: '#000000',
-      strokeThickness: 2,
-      alpha: 0.7,
-    }).setOrigin(0.5).setDepth(20);
+    this.add
+      .text(cx, GAME_H - 32, "github.com/iniadil", {
+        fontSize: "12px",
+        fontFamily: "Arial",
+        color: "#aaddff",
+        stroke: "#000000",
+        strokeThickness: 2,
+        alpha: 0.7,
+      })
+      .setOrigin(0.5)
+      .setDepth(20);
 
     // Level up text
-    this.levelUpText = this.add.text(cx, 130, 'Level Up!', {
-      fontSize: '32px',
-      fontFamily: 'Arial',
-      color: '#ffff00',
-      stroke: '#000000',
-      strokeThickness: 4,
-    }).setOrigin(0.5).setDepth(20).setVisible(false);
+    this.levelUpText = this.add
+      .text(cx, 130, "Level Up!", {
+        fontSize: "32px",
+        fontFamily: "Arial",
+        color: "#ffff00",
+        stroke: "#000000",
+        strokeThickness: 4,
+      })
+      .setOrigin(0.5)
+      .setDepth(20)
+      .setVisible(false);
 
     // Game over texts
-    this.gameOverText = this.add.text(cx, GAME_H / 2 - 60, '', {
-      fontSize: '36px',
-      fontFamily: 'Arial',
-      color: '#ffffff',
-      stroke: '#000000',
-      strokeThickness: 4,
-      align: 'center',
-    }).setOrigin(0.5).setDepth(20).setVisible(false);
+    this.gameOverText = this.add
+      .text(cx, GAME_H / 2 - 60, "", {
+        fontSize: "36px",
+        fontFamily: "Arial",
+        color: "#ffffff",
+        stroke: "#000000",
+        strokeThickness: 4,
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setDepth(20)
+      .setVisible(false);
 
-    this.restartText = this.add.text(cx, GAME_H / 2 + 30, 'Tap or Press Space\nto Restart', {
-      fontSize: '22px',
-      fontFamily: 'Arial',
-      color: '#ffffff',
-      stroke: '#000000',
-      strokeThickness: 3,
-      align: 'center',
-    }).setOrigin(0.5).setDepth(20).setVisible(false);
+    this.restartText = this.add
+      .text(cx, GAME_H / 2 + 30, "Tap or Press Space\nto Restart", {
+        fontSize: "22px",
+        fontFamily: "Arial",
+        color: "#ffffff",
+        stroke: "#000000",
+        strokeThickness: 3,
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setDepth(20)
+      .setVisible(false);
 
     // Input
-    this.input.on('pointerdown', () => this.handleInput());
-    this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    this.spaceKey.on('down', () => this.handleInput());
+    this.input.on("pointerdown", () => this.handleInput());
+    this.spaceKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.SPACE,
+    );
+    this.spaceKey.on("down", () => this.handleInput());
 
     // Colliders — set up with groups
-    this.physics.add.collider(this.bird, this.groundBody, () => this.hitGround());
+    this.physics.add.collider(this.bird, this.groundBody, () =>
+      this.hitGround(),
+    );
     this.physics.add.collider(this.bird, this.ceiling);
 
     // Pillar spawn timer
@@ -216,13 +262,12 @@ class GameScene extends Phaser.Scene {
     });
 
     // Audio
-    this.bgm = this.sound.add('bgm', { loop: true, volume: 0.3 });
-    this.jumpSfx = this.sound.add('jumpSound', { volume: 0.5 });
-    this.scoreSfx = this.sound.add('scoreSound', { volume: 0.6 });
-    this.crashSfx = this.sound.add('crashSound', { volume: 0.7 });
-    this.fallSfx = this.sound.add('fallSound', { volume: 0.7 });
+    this.bgm = this.sound.add("bgm", { loop: true, volume: 0.3 });
+    this.jumpSfx = this.sound.add("jumpSound", { volume: 0.5 });
+    this.scoreSfx = this.sound.add("scoreSound", { volume: 0.6 });
+    this.crashSfx = this.sound.add("crashSound", { volume: 0.7 });
+    this.fallSfx = this.sound.add("fallSound", { volume: 0.7 });
   }
-
 
   update(_time, delta) {
     this.bg.tilePositionX += 0.5;
@@ -245,19 +290,21 @@ class GameScene extends Phaser.Scene {
   }
 
   extractPilarTextures() {
-    const source = this.textures.get('pilar_sheet').getSourceImage();
+    const source = this.textures.get("pilar_sheet").getSourceImage();
 
     // Shaft: kiri 40px, full 300px tinggi
-    const cs = document.createElement('canvas');
-    cs.width = 40; cs.height = 300;
-    cs.getContext('2d').drawImage(source, 0, 0, 40, 300, 0, 0, 40, 300);
-    this.textures.addCanvas('pilar_shaft', cs);
+    const cs = document.createElement("canvas");
+    cs.width = 40;
+    cs.height = 300;
+    cs.getContext("2d").drawImage(source, 0, 0, 40, 300, 0, 0, 40, 300);
+    this.textures.addCanvas("pilar_shaft", cs);
 
     // Cap: kanan 60px, hanya 50px teratas
-    const cc = document.createElement('canvas');
-    cc.width = 60; cc.height = 50;
-    cc.getContext('2d').drawImage(source, 40, 0, 60, 50, 0, 0, 60, 50);
-    this.textures.addCanvas('pilar_cap', cc);
+    const cc = document.createElement("canvas");
+    cc.width = 60;
+    cc.height = 50;
+    cc.getContext("2d").drawImage(source, 40, 0, 60, 50, 0, 0, 60, 50);
+    this.textures.addCanvas("pilar_cap", cc);
   }
 
   createPillarColumn(x, y, height, isTop) {
@@ -271,7 +318,7 @@ class GameScene extends Phaser.Scene {
 
     // Cap di sisi gap (bawah untuk top, atas untuk bottom)
     const capLocalY = isTop ? height / 2 - CAP_H / 2 : -height / 2 + CAP_H / 2;
-    const cap = this.add.image(0, capLocalY, 'pilar_cap');
+    const cap = this.add.image(0, capLocalY, "pilar_cap");
     cap.setDisplaySize(60, CAP_H);
     if (isTop) cap.setFlipY(true);
     container.add(cap);
@@ -280,7 +327,13 @@ class GameScene extends Phaser.Scene {
     if (shaftHeight > 0) {
       const overlap = 2;
       const shaftLocalY = isTop ? -CAP_H / 2 + overlap : CAP_H / 2 - overlap;
-      const shaft = this.add.tileSprite(0, shaftLocalY, 40, shaftHeight + overlap, 'pilar_shaft');
+      const shaft = this.add.tileSprite(
+        0,
+        shaftLocalY,
+        40,
+        shaftHeight + overlap,
+        "pilar_shaft",
+      );
       container.add(shaft);
     }
 
@@ -292,11 +345,14 @@ class GameScene extends Phaser.Scene {
 
     // Move and check pillars
     const pillarsToRemove = [];
-    this.pillars.getChildren().forEach(pillar => {
+    this.pillars.getChildren().forEach((pillar) => {
       pillar.x += speed;
 
       // Check collision with bird
-      if (this.state === STATE.PLAYING && this.checkOverlap(this.bird, pillar)) {
+      if (
+        this.state === STATE.PLAYING &&
+        this.checkOverlap(this.bird, pillar)
+      ) {
         this.hitPillar();
       }
 
@@ -304,14 +360,18 @@ class GameScene extends Phaser.Scene {
         pillarsToRemove.push(pillar);
       }
     });
-    pillarsToRemove.forEach(p => p.destroy());
+    pillarsToRemove.forEach((p) => p.destroy());
 
     // Move and check score zones
     const zonesToRemove = [];
-    this.scoreZones.getChildren().forEach(zone => {
+    this.scoreZones.getChildren().forEach((zone) => {
       zone.x += speed;
 
-      if (!zone.scored && this.state === STATE.PLAYING && this.checkScoreZone(this.bird, zone)) {
+      if (
+        !zone.scored &&
+        this.state === STATE.PLAYING &&
+        this.checkScoreZone(this.bird, zone)
+      ) {
         this.incrementScore(zone);
       }
 
@@ -319,14 +379,19 @@ class GameScene extends Phaser.Scene {
         zonesToRemove.push(zone);
       }
     });
-    zonesToRemove.forEach(z => z.destroy());
+    zonesToRemove.forEach((z) => z.destroy());
   }
 
   checkScoreZone(bird, zone) {
     // No inset — zone is just 10px wide, use full bounds
     return Phaser.Geom.Intersects.RectangleToRectangle(
       bird.getBounds(),
-      new Phaser.Geom.Rectangle(zone.x - 5, zone.y - zone.height / 2, 10, zone.height)
+      new Phaser.Geom.Rectangle(
+        zone.x - 5,
+        zone.y - zone.height / 2,
+        10,
+        zone.height,
+      ),
     );
   }
 
@@ -339,24 +404,36 @@ class GameScene extends Phaser.Scene {
     // Bird hitbox — inset dari 100x100 display
     const bb = bird.getBounds();
     const bi = 20;
-    const birdRect = new Phaser.Geom.Rectangle(bb.x + bi, bb.y + bi, bb.width - bi * 2, bb.height - bi * 2);
+    const birdRect = new Phaser.Geom.Rectangle(
+      bb.x + bi,
+      bb.y + bi,
+      bb.width - bi * 2,
+      bb.height - bi * 2,
+    );
 
     // Cap rect — inset agar sentuhan ringan di tepi masih aman
-    const capCY = isTop ? y + pillarHeight / 2 - CAP_H / 2 : y - pillarHeight / 2 + CAP_H / 2;
+    const capCY = isTop
+      ? y + pillarHeight / 2 - CAP_H / 2
+      : y - pillarHeight / 2 + CAP_H / 2;
     const capIX = 10; // inset horizontal cap
-    const capIY = 8;  // inset sisi gap (atas/bawah cap)
+    const capIY = 8; // inset sisi gap (atas/bawah cap)
     const capRect = new Phaser.Geom.Rectangle(
       x - CAP_W / 2 + capIX,
       capCY - CAP_H / 2 + (isTop ? capIY : 0),
       CAP_W - capIX * 2,
-      CAP_H - capIY
+      CAP_H - capIY,
     );
 
     // Shaft rect — inset horizontal, shaft sudah sempit (40px)
     const shaftHeight = Math.max(0, pillarHeight - CAP_H);
     const shaftCY = isTop ? y - CAP_H / 2 : y + CAP_H / 2;
     const shaftIX = 6;
-    const shaftRect = new Phaser.Geom.Rectangle(x - SHAFT_W / 2 + shaftIX, shaftCY - shaftHeight / 2, SHAFT_W - shaftIX * 2, shaftHeight);
+    const shaftRect = new Phaser.Geom.Rectangle(
+      x - SHAFT_W / 2 + shaftIX,
+      shaftCY - shaftHeight / 2,
+      SHAFT_W - shaftIX * 2,
+      shaftHeight,
+    );
 
     return (
       Phaser.Geom.Intersects.RectangleToRectangle(birdRect, capRect) ||
@@ -411,14 +488,23 @@ class GameScene extends Phaser.Scene {
     // Top pillar
     const topHeight = gapCenterY - this.gapSize / 2;
     if (topHeight > 0) {
-      this.pillars.add(this.createPillarColumn(spawnX, topHeight / 2, topHeight, true));
+      this.pillars.add(
+        this.createPillarColumn(spawnX, topHeight / 2, topHeight, true),
+      );
     }
 
     // Bottom pillar
     const bottomY = gapCenterY + this.gapSize / 2;
     const bottomHeight = groundTop - bottomY;
     if (bottomHeight > 0) {
-      this.pillars.add(this.createPillarColumn(spawnX, bottomY + bottomHeight / 2, bottomHeight, false));
+      this.pillars.add(
+        this.createPillarColumn(
+          spawnX,
+          bottomY + bottomHeight / 2,
+          bottomHeight,
+          false,
+        ),
+      );
     }
 
     // Score zone — invisible rectangle in the gap
@@ -438,9 +524,9 @@ class GameScene extends Phaser.Scene {
     const newLevel = Math.floor(this.score / 5);
     if (newLevel > this.level) {
       this.level = newLevel;
-      this.pillarSpeed = INITIAL_PILLAR_SPEED - (this.level * 20);
-      this.gapSize = Math.max(120, INITIAL_GAP_SIZE - (this.level * 10));
-      this.spawnMs = Math.max(1000, INITIAL_SPAWN_MS - (this.level * 150));
+      this.pillarSpeed = INITIAL_PILLAR_SPEED - this.level * 20;
+      this.gapSize = Math.max(120, INITIAL_GAP_SIZE - this.level * 10);
+      this.spawnMs = Math.max(1000, INITIAL_SPAWN_MS - this.level * 150);
 
       this.pillarTimer.delay = this.spawnMs;
 
@@ -480,7 +566,9 @@ class GameScene extends Phaser.Scene {
     this.pillarTimer.paused = true;
     this.bgm.stop();
 
-    this.gameOverText.setText(`Game Over!\nScore: ${this.score}`).setVisible(true);
+    this.gameOverText
+      .setText(`Game Over!\nScore: ${this.score}`)
+      .setVisible(true);
     this.restartText.setVisible(true);
   }
 
@@ -507,7 +595,7 @@ const config = {
     height: GAME_H,
   },
   physics: {
-    default: 'arcade',
+    default: "arcade",
     arcade: {
       gravity: { y: 0 },
       debug: false,
