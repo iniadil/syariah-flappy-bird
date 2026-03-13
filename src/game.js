@@ -4,6 +4,58 @@ import Phaser from 'phaser';
 const GAME_W = 400;
 const GAME_H = 720;
 
+class LoadingScene extends Phaser.Scene {
+  constructor() {
+    super('LoadingScene');
+  }
+
+  preload() {
+    const cx = GAME_W / 2;
+    const cy = GAME_H / 2;
+
+    this.cameras.main.setBackgroundColor('#5ba3c9');
+
+    this.add.text(cx, cy - 100, 'Flappy Bird', {
+      fontSize: '44px',
+      fontFamily: 'Arial',
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 6,
+    }).setOrigin(0.5);
+
+    // Progress bar
+    this.add.rectangle(cx, cy, 260, 28, 0x000000, 0.4).setOrigin(0.5);
+    const bar = this.add.rectangle(cx - 128, cy, 4, 20, 0xffffff).setOrigin(0, 0.5);
+
+    this.add.text(cx, cy + 30, 'Loading...', {
+      fontSize: '18px',
+      fontFamily: 'Arial',
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 3,
+    }).setOrigin(0.5);
+
+    this.load.on('progress', (v) => bar.setSize(4 + 252 * v, 20));
+
+    this.load.image('bg', 'assets/bg_dessert_1024x640.png');
+    this.load.image('ground', 'assets/rumput_30x30.png');
+    this.load.spritesheet('bird', 'assets/main_character_4frame_200x50.png', {
+      frameWidth: 50,
+      frameHeight: 50,
+    });
+    this.load.image('pilar_sheet', 'assets/pilar_2frame_100x300.png');
+    this.load.audio('bgm', 'assets/sound/bgm_music.mp3');
+    this.load.audio('jumpSound', 'assets/sound/flappy_bird_jump_sound.wav');
+    this.load.audio('scoreSound', 'assets/sound/checkpoint_sound.wav');
+    this.load.audio('crashSound', 'assets/sound/funny_flappy_bird_crash_sound.wav');
+    this.load.audio('fallSound', 'assets/sound/funny_flappy_bird_fall_down_sound.wav');
+  }
+
+  create() {
+    this.scene.start('GameScene');
+  }
+}
+
 // Constants
 const GRAVITY = 900;
 const FLAP_VELOCITY = -320;
@@ -21,7 +73,7 @@ const STATE = { READY: 0, PLAYING: 1, GAME_OVER: 2 };
 
 class GameScene extends Phaser.Scene {
   constructor() {
-    super('GameScene');
+    super({ key: 'GameScene' });
     this.state = STATE.READY;
     this.score = 0;
     this.level = 0;
@@ -29,21 +81,6 @@ class GameScene extends Phaser.Scene {
     this.gapSize = INITIAL_GAP_SIZE;
     this.spawnMs = INITIAL_SPAWN_MS;
     this.bobTimer = 0;
-  }
-
-  preload() {
-    this.load.image('bg', 'assets/bg_dessert_1024x640.png');
-    this.load.image('ground', 'assets/rumput_30x30.png');
-    this.load.spritesheet('bird', 'assets/main_character_4frame_200x50.png', {
-      frameWidth: 50,
-      frameHeight: 50,
-    });
-    this.load.image('pilar_sheet', 'assets/pilar_2frame_100x300.png');
-    this.load.audio('bgm', 'assets/sound/bgm_music.mp3');
-    this.load.audio('jumpSound', 'assets/sound/flappy_bird_jump_sound.wav');
-    this.load.audio('scoreSound', 'assets/sound/checkpoint_sound.wav');
-    this.load.audio('crashSound', 'assets/sound/funny_flappy_bird_crash_sound.wav');
-    this.load.audio('fallSound', 'assets/sound/funny_flappy_bird_fall_down_sound.wav');
   }
 
   create() {
@@ -476,7 +513,7 @@ const config = {
       debug: false,
     },
   },
-  scene: GameScene,
+  scene: [LoadingScene, GameScene],
 };
 
 new Phaser.Game(config);
